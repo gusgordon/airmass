@@ -22,5 +22,5 @@ airmass.from_altitude(zenith_degrees, altitude_meters, day_of_year, latitude, li
 ```
 See the documentation of each function for more details.
 
-##
+## Solar
 There is additionally a `solar` module, which is a work in progress. The goal of this is for accurate computation of solar intensity at various altitudes, so that high-altitude solar power output can be modeled ([for use in solar planes](https://github.com/gusgordon/atmosat)).
