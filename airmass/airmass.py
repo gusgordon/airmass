@@ -85,7 +85,7 @@ def compute(
             T_c,
             relhumid=relative_humidity,
         )
-    print(res)
+
     if res[0] == "zenith not valid":
         raise ValueError(
             f"Zenith angle of {zenith} degrees is not valid. The zenith angle must be between 0 and 90 degrees."
