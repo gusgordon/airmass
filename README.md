@@ -1,6 +1,8 @@
 # airmass
 Python module for computing atmospheric airmass and column density, using [Reed Meyer's airmass program](http://reed.gigacorp.net/vitdownld.html#airmass). I have converted his C program to a Python extension.
 
+This is a very accurate calculation - to quote Reed, it "was developed to find out to just what degree the standard approximate formulas for airmass are inaccurate".
+
 For a detailed description of the model used, see [Reed's description](https://github.com/gusgordon/airmass/blob/master/extensions/airmassc.c).
 
 ## Installation
