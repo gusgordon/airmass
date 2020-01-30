@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from . import airmass as airmass_lib
 
 
 def solar_intensity(
@@ -45,8 +46,10 @@ def solar_intensity(
             intensities.append(0)
             continue
 
-        airmass = get_airmass_data(zenith, altitude, day_of_year, latitude, wavelength)
-        airmass_sea_level_zenith = get_airmass_data(
+        airmass = airmass_lib.get_airmass_data(
+            zenith, altitude, day_of_year, latitude, wavelength
+        )
+        airmass_sea_level_zenith = airmass_lib.get_airmass_data(
             0, 0, day_of_year, latitude, wavelength
         )
         relative_airmass = airmass / airmass_sea_level_zenith
@@ -87,8 +90,8 @@ def solar_intensity(
 def yearly_solar_intensity(altitude, latitude=20, wavelength=5000, cloud_cover=None):
     mis = []
     for day in np.arange(0, 359, 30):
-        mi = solar_flux_density(
-            altitude, day=day, latitude=latitude, wavelength=wavelength
+        mi = solar_intensity(
+            altitude, day_of_year=day, latitude=latitude, wavelength=wavelength
         )
         mis.append(mi)
     mis_mean = np.mean(mis)
