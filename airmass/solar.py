@@ -48,10 +48,10 @@ def solar_intensity(
 
         airmass = airmass_lib.from_altitude(
             zenith, altitude, day_of_year, latitude, wavelength
-        )
+        )['airmass']
         airmass_sea_level_zenith = airmass_lib.from_altitude(
             0, 0, day_of_year, latitude, wavelength
-        )
+        )['airmass']
         relative_airmass = airmass / airmass_sea_level_zenith
 
         # Modified from http://www.pveducation.org/pvcdrom/2-properties-sunlight/air-mass
