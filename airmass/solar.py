@@ -46,10 +46,10 @@ def solar_intensity(
             intensities.append(0)
             continue
 
-        airmass = airmass_lib.get_airmass_data(
+        airmass = airmass_lib.from_altitude(
             zenith, altitude, day_of_year, latitude, wavelength
         )
-        airmass_sea_level_zenith = airmass_lib.get_airmass_data(
+        airmass_sea_level_zenith = airmass_lib.from_altitude(
             0, 0, day_of_year, latitude, wavelength
         )
         relative_airmass = airmass / airmass_sea_level_zenith
