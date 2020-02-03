@@ -73,7 +73,7 @@ def compute(
     """
     if relative_humidity is None:
         res = _compute_airmass(
-            zenith_degrees, altitude, day_of_year, latitude, light_wavelength, P_Pa, T_c
+            zenith_degrees, altitude, day_of_year, latitude, light_wavelength, P_Pa, T_K
         )
     else:
         res = _compute_airmass(
