@@ -60,10 +60,10 @@ def compute(
         Consider using the ``from_altitude`` function below if you are using
         standard atmospheric conditions, and would like temperature and pressure
         automatically applied for your supplied altitude.
-    relative_humidity : float
+    relative_humidity : float, default None
         Additionally compute an estimate of the water vapor column density
         and airmass, using a crude model for the water vapor profile based
-        on the local relative humidity at ground level in percent (100 = saturated).
+        on the local relative humidity at ground level in fraction (0.0 = dry, 1.0 = saturated).
 
     Returns
     -------
@@ -134,10 +134,10 @@ def from_altitude(
     light_wavelength : float
         The observing wavelength in Angstroms. Don't worry too much about an
         exact figure here, as the wavelength dependence is very small.
-    relative_humidity : float
+    relative_humidity : float, default None
         Additionally compute an estimate of the water vapor column density
         and airmass, using a crude model for the water vapor profile based
-        on the local relative humidity at ground level in percent (100 = saturated).
+        on the local relative humidity at ground level in fraction (0.0 = dry, 1.0 = saturated).
 
     Returns
     -------
