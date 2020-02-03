@@ -881,6 +881,7 @@ double columndensityint(double r)
 
    rho=frho(r-bigrvec[index], rhovec[index], tvec[index], betavec[index]);
    r*=r;
+
    return STANDARDR02*rho/(r*sqrt(1.-const6*r/musquare(rho)));
 }
 
@@ -907,7 +908,7 @@ double vaporcolumndensityint(double r)
  *  Numerical Recipes routine by Press et al.
  ******************************************************************************/
 
-static double trapzd(double (*func)(double), double a, double b, int n)
+inline double trapzd(double (*func)(double), double a, double b, int n)
 {
    double del, sum, tnm, x;
    int j;
@@ -938,6 +939,40 @@ static double trapzd(double (*func)(double), double a, double b, int n)
  *  Numerical Recipes routine by Press et al.
  ******************************************************************************/
 
+inline double polint(double *xa, double *ya)
+{
+   double c[K], d[K], den, dif, dift, ho, hp, w, y;
+   int i, m, ns;
+
+   /* find the index of the closest table entry */
+   ns=0;
+   dif=fabs(xa[ns]);
+   for(i=0;i<K;i++) {
+      dift=fabs(xa[i]);
+      if (dift<dif) {
+         ns=i;
+         dif=dift;
+      }
+      c[i]=ya[i];
+      d[i]=ya[i];
+   }
+
+   y=ya[ns--]; /* first guess */
+   for (m=0;m<(K-1);m++) {
+      for(i=0;i<(K-1)-m;i++) {
+         ho=xa[i];
+         hp=xa[i+m+1];
+         w=c[i+1]-d[i];
+         den=ho-hp;
+         den=w/den;
+         c[i]=ho*den;
+         d[i]=hp*den;
+      }
+      y+=(2*ns+1<(K-2)-m) ? c[ns+1] : d[ns--];
+   }
+   return y;
+}
+
 /*******************************************************************************
  *  qromb - Romberg rule integration
  *  Adapted from J. Percival, who in turn adapted it from the original
@@ -954,7 +989,7 @@ double qromb(double (*func)(double), double a, double b, double eps)
    for (i=0;i<IMAX;i++) {
       s[i]=trapzd(func, a, b, i);
       if (i>=(K-1)) {
-         ss=3.443;
+         ss=polint(h+i-(K-1), s+i-(K-1));
          if (fabs((ss-oldss)/ss)<eps) return ss;
          oldss=ss;
       } else oldss=s[i];
@@ -1029,6 +1064,7 @@ static PyObject *c_compute_airmass(PyObject *self, PyObject *args) {
 
    /* Calculate bigrvec, the bigr at the bottom of each temperature layer */
    *bigrvec=(-STANDARDR02)/(rmsl+alt);
+
    rjunk=r1poly[10];
    for (i=9;i>=0;i--) rjunk=rjunk*lat+((i%2) ? r1poly[i]*cosyearfrac :
         r1poly[i]);
@@ -1053,6 +1089,7 @@ static PyObject *c_compute_airmass(PyObject *self, PyObject *args) {
    colz=qromb(columndensityint, *bigrvec, bigrvec[NTLEVELS], 1.E-8);
    const6=0.;  /* equivalent to setting z = 0. */
    col0=qromb(columndensityint, *bigrvec, bigrvec[NTLEVELS], 1.E-8);
+   
    airmass=colz/col0;
 
    printf("for z=%.15g: column density=%.8g g/cm^2; zenith column density=%.8g g/cm^2; AIRMASS=%.8g\n", z,
@@ -1100,7 +1137,7 @@ static struct PyModuleDef airmass_definition = {
     PyModuleDef_HEAD_INIT,
     "c_airmass",
     "Computes airmass on Earth.",
-    -1, 
+    -1,
     airmass_methods
 };
 
