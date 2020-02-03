@@ -14,13 +14,13 @@ atmosphere = (
 
 
 def compute(
-    zenith,
+    zenith_degrees,
     altitude,
     day_of_year,
     latitude,
     light_wavelength,
-    P_mb,
-    T_c,
+    P_Pa,
+    T_K,
     relative_humidity=None,
 ):
     """Computes airmass and column density on Earth for a
@@ -31,9 +31,10 @@ def compute(
 
     Parameters
     ----------
-    zenith : float
+    zenith_degrees : float
         The apparent zenith angle (not the true angle in the
-        absence of atmosphere) at which you want the airmass.
+        absence of atmosphere, but angle including refraction) at which
+        you want the airmass.
     altitude : float
         The altitude of the observer above sea level, in meters.
         Consider using the ``from_altitude`` function below if you are using
@@ -49,13 +50,13 @@ def compute(
     light_wavelength : float
         The observing wavelength in Angstroms. Don't worry too much about an
         exact figure here, as the wavelength dependence is very small.
-    P_mb : float
-        Specifies the local pressure in millibars.
+    P_Pa : float
+        Specifies the local pressure in Pascals.
         Consider using the ``from_altitude`` function below if you are using
         standard atmospheric conditions, and would like temperature and pressure
         automatically applied for your supplied altitude.
-    T_c : float
-        Specifies the local temperature in Celcius.
+    T_K : float
+        Specifies the local temperature in Kelvin.
         Consider using the ``from_altitude`` function below if you are using
         standard atmospheric conditions, and would like temperature and pressure
         automatically applied for your supplied altitude.
@@ -72,23 +73,23 @@ def compute(
     """
     if relative_humidity is None:
         res = _compute_airmass(
-            zenith, altitude, day_of_year, latitude, light_wavelength, P_mb, T_c
+            zenith_degrees, altitude, day_of_year, latitude, light_wavelength, P_Pa, T_c
         )
     else:
         res = _compute_airmass(
-            zenith,
+            zenith_degrees,
             altitude,
             day_of_year,
             latitude,
             light_wavelength,
-            P_mb,
-            T_c,
+            P_Pa,
+            T_K,
             relhumid=relative_humidity,
         )
 
-    if res[0] == "zenith not valid":
+    if res[0] == "zenith_degrees not valid":
         raise ValueError(
-            f"Zenith angle of {zenith} degrees is not valid. The zenith angle must be between 0 and 90 degrees."
+            f"Zenith angle of {zenith_degrees} degrees is not valid. The zenith angle must be between 0 and 90 degrees."
         )
     elif res[0] == "water vapor":
         return {
@@ -108,7 +109,7 @@ def compute(
 
 
 def from_altitude(
-    zenith, altitude, day_of_year, latitude, light_wavelength, relative_humidity=None
+    zenith_degrees, altitude, day_of_year, latitude, light_wavelength, relative_humidity=None
 ):
     """Computes airmass and column density on Earth for a
     given altitude. Uses the 1976 atmospheric data to compute temperature and
@@ -117,9 +118,10 @@ def from_altitude(
 
     Parameters
     ----------
-    zenith : float
+    zenith_degrees : float
         The apparent zenith angle (not the true angle in the
-        absence of atmosphere) at which you want the airmass.
+        absence of atmosphere, but angle including refraction) at which
+        you want the airmass.
     altitude : float
         The altitude of the observer above sea level, in meters.
     day_of_year : float
@@ -143,16 +145,15 @@ def from_altitude(
         Contains airmass and column densities, for dry air by default and for water
         vapor if relative_humidity is specified.
     """
-    T_k, P_pa, _, _, _ = atmosphere[int(altitude)]
-    T_c = T_k - 273.15
-    P_mb = P_pa * 0.01
+    T_K, P_Pa, _, _, _ = atmosphere[int(altitude)]
+
     return compute(
-        zenith,
+        zenith_degrees,
         altitude,
         day_of_year,
         latitude,
         light_wavelength,
-        P_mb,
-        T_c,
+        P_Pa,
+        T_K,
         relative_humidity=relative_humidity,
     )
