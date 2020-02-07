@@ -210,5 +210,4 @@ def from_altitude(zenith_degrees, altitude, day_of_year, latitude, light_wavelen
         light_wavelength,
         P_Pa,
         T_K,
-        relative_humidity=relative_humidity,
     )
