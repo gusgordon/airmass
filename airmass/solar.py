@@ -208,7 +208,7 @@ def get_ozone_particle_col_density(zenith_degrees, altitude):
 
     n_air_particles = atmosphere["Density [kg/m3]"] / air_molar_mass * N_Avogadro
 
-    ozone = pd.DataFrame({"ppm": get_ozone(), "n_air_particles": n_air_particles})
+    ozone = pd.DataFrame({"ppm": get_ozone_ppm(), "n_air_particles": n_air_particles})
     ozone["rel_ppm"] = ozone.ppm.div(np.cos(zenith_degrees * np.pi / 180))
     ozone = ozone[:50000]
     ozone["ozone_particles"] = ozone.n_air_particles * ozone.rel_ppm / 1e6
