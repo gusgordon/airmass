@@ -136,7 +136,7 @@ def water_vapor_col_density(
     elif altitude < lower_stratosphere_top_m:
         rel_humid = relative_humidity_sea_level * 0.5
     else:
-        rel_humid = 0
+        return 0.0
 
     water_vapor_col_density_0_alt = (
         _compute_airmass(
