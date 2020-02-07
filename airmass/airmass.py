@@ -132,9 +132,9 @@ def water_vapor_col_density(
     lower_stratosphere_top_m = 30000
 
     if altitude < troposphere_top_m:
-        rel_humid = sea_level_humidity
+        rel_humid = relative_humidity_sea_level
     elif altitude < lower_stratosphere_top_m:
-        rel_humid = sea_level_humidity * 0.5
+        rel_humid = relative_humidity_sea_level * 0.5
     else:
         rel_humid = 0
 
@@ -147,7 +147,7 @@ def water_vapor_col_density(
             light_wavelength,
             101325,
             288.15,
-            relative_humidity_sea_level,
+            rel_humid,
         )[1]
         * -0.5
     )
