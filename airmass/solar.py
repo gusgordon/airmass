@@ -1,6 +1,9 @@
+import os
 import numpy as np
 import pandas as pd
 import airmass as airmass_lib
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 N_Avogadro = 6.02214076e23
 
@@ -38,7 +41,7 @@ def get_solar_spectrum_modtran():
     # Load in MODTRAN extraterrestrial specta
     # Source: https://www.nrel.gov/grid/solar-resource/spectra.html
     solar_spectrum_all = (
-        pd.read_csv("data/MODTRAN-W_M-2_nm-1.csv")
+        pd.read_csv(os.path.join(dir_path, "data/MODTRAN-W_M-2_nm-1.csv"))
         .drop("(CM-1)", axis=1)
         .set_index("nm")
     )
@@ -81,7 +84,7 @@ def get_ozone_ppm():
     # Load in NASA ozone vs. altitude data
     # Source: https://ozonewatch.gsfc.nasa.gov/facts/SH.html
     ozone_ppm_vs_altitude = pd.read_csv(
-        "data/ozone_vs_altitude.csv", index_col="altitude_km"
+        os.path.join(dir_path, "data/ozone_vs_altitude.csv"), index_col="altitude_km"
     ).ozone_ppm.sort_index()
 
     ozone_frac_vs_altitude = ozone_ppm_vs_altitude * 1e-6
@@ -138,7 +141,7 @@ def get_cross_section(compound):
     """
 
     cross_section = pd.read_csv(
-        f"data/composite_xc_extended_{compound.lower()}",
+        os.path.join(dir_path, f"data/composite_xc_extended_{compound.lower()}"),
         delim_whitespace=True,
         index_col="wav_nm",
     )
@@ -201,7 +204,7 @@ def get_ozone_particle_col_density(zenith_degrees, altitude):
         Ozone particle column density in particles/m^2.
     """
 
-    atm_data = pd.read_csv("data/st_atm_1976.csv").set_index("Altitude [m]")
+    atm_data = pd.read_csv(os.path.join(dir_path, "data/st_atm_1976.csv")).set_index("Altitude [m]")
     atmosphere = atm_data.reindex(
         np.arange(atm_data.index[0], atm_data.index[-1] + 1)
     ).interpolate()

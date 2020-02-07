@@ -1,7 +1,9 @@
+import os
 import numpy as np
 import pandas as pd
 from airmassc import c_compute_airmass as _compute_airmass
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 def compute(
     zenith_degrees, altitude, day_of_year, latitude, light_wavelength, P_Pa, T_K
@@ -193,7 +195,7 @@ def from_altitude(zenith_degrees, altitude, day_of_year, latitude, light_wavelen
     """
 
     # Atmospheric data from http://www.digitaldutch.com/atmoscalc/tableatmosphere.htm
-    atm_data = pd.read_csv("data/st_atm_1976.csv").set_index("Altitude [m]")
+    atm_data = pd.read_csv(os.path.join(dir_path, "data/st_atm_1976.csv")).set_index("Altitude [m]")
     atmosphere = (
         atm_data.reindex(np.arange(atm_data.index[0], atm_data.index[-1] + 1))
         .interpolate()
