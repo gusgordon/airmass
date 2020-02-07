@@ -369,3 +369,63 @@ def get_solar_irradiance(
     )
 
     return total_power_incedent
+
+def solar_intensity_time(
+    altitude,
+    day_of_year,
+    latitude,
+    hour_of_day,
+    include_diffuse_sky=True,
+):
+    """Get the solar irradiance in watts/m^2 at a certain time.
+    Outputs power in watts/m^2. See doc for get_solar_irradiance above
+    for more details.
+
+    Parameters
+    ----------
+    altitude : float
+        The altitude of the observer above sea level, in meters.
+        Consider using the ``from_altitude`` function below if you are using
+        standard atmospheric conditions, and would like temperature and pressure
+        automatically applied for your supplied altitude.
+    day_of_year : float
+        The date, in days since the beginning of the year
+        (0 = midnight Jan. 1; the default is 80, corresponding roughly to
+        the vernal equinox); don't worry about fractions of a day, since the
+        seasonal effect on airmass is relatively small.
+    latitude : float
+        The observer's latitude on Earth.
+    hour_of_day : float
+        The current hour, for example 7.5 for 7:30 AM.
+    include_diffuse_sky : boolean, default True
+        Approximately add in the contribution from diffuse sky irradiance.
+        This is a rough model, but regardless, the contribution is fairly small.
+
+    Returns
+    -------
+    float
+        Solar irradiance in watts/m^2.
+    """
+
+    # Declination angle from http://www.pveducation.org/pvcdrom/properties-of-sunlight/declination-angle
+    declination = -23.45 * np.cos(360 / 365 * (day_of_year + 10) * np.pi / 180)
+
+    hour_angle = int(np.rint((hour_of_day * 360) / 24)) + 180
+
+    p1 = np.sin(latitude * np.pi / 180) * np.sin(declination * np.pi / 180)
+    p2 = (
+        np.cos(latitude * np.pi / 180)
+        * np.cos(declination * np.pi / 180)
+        * np.cos(hour_angle * np.pi / 180)
+    )
+    zenith = np.arccos(p1 + p2) * 180 / np.pi
+
+    if zenith > 89.9:
+        return 0.0
+
+    return get_solar_irradiance(
+        zenith, altitude, day_of_year, latitude,
+        include_diffuse_sky=include_diffuse_sky
+    )
+
+    return intensity

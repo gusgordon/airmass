@@ -4,4 +4,5 @@ from .solar import (
     get_solar_spectrum_modtran, get_solar_irradiance,
     get_ozone_ppm, get_cross_section, get_air_mass_extinction,
     get_ozone_particle_col_density, get_cloud_attentuation,
+    solar_intensity_time
 )
