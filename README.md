@@ -22,6 +22,16 @@ airmass.from_altitude(zenith_degrees, altitude_meters, day_of_year, latitude, li
 ```
 See the documentation of each function for more details.
 
-### Solar
-There is additionally a `solar` module, which uses extinction coefficients at each wavelength to compute the solar irradiance under different conditions (namely at different altitudes) on Earth. Extinction from dry air, ozone, and water vapor are included. The goal of this is for accurate computation of solar intensity at various altitudes, so that high-altitude solar power output can be modeled ([for use in solar planes](https://github.com/gusgordon/atmosat)).
+## Solar
+There is additionally a `solar` module, which uses extinction coefficients at each wavelength to compute the solar irradiance under different conditions (namely at different altitudes and times) on Earth. Extinction from dry air, ozone, and water vapor are included. The goal of this is for accurate computation of solar intensity at various altitudes, so that high-altitude solar power output can be modeled ([for use in solar planes](https://github.com/gusgordon/atmosat)).
 
+### Solar usage
+```
+airmass.solar_intensity_time(
+    altitude,
+    day_of_year,
+    latitude,
+    hour_of_day,
+    include_diffuse_sky=True
+)
+```
